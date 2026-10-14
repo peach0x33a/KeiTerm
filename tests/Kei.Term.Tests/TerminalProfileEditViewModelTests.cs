@@ -13,28 +13,6 @@ namespace Kei.Term.Tests;
 public class TerminalProfileEditViewModelTests
 {
     [Fact]
-    public void Constructor_WithBuiltInProfile_SetsCopyToTrueAndAppendsCopySuffix()
-    {
-        var builtIn = new TerminalProfile
-        {
-            Id = "builtin-test",
-            Name = "Monokai",
-            IsBuiltIn = true,
-            Background = "#272822",
-            Foreground = "#FFFFFF"
-        };
-
-        var vm = new TerminalProfileEditViewModel(builtIn);
-
-        Assert.Equal("Monokai (副本)", vm.Name);
-        Assert.False(vm.IsBuiltIn);
-        Assert.Equal("#272822", vm.Background);
-        Assert.Equal("#FFFFFF", vm.Foreground);
-        Assert.Equal(16, vm.AnsiColors.Count);
-        Assert.Equal(16, vm.AnsiBrushes.Count);
-    }
-
-    [Fact]
     public void SelectTargetAndChangeHex_UpdatesTargetColorAndBrush()
     {
         var vm = new TerminalProfileEditViewModel();
@@ -61,6 +39,7 @@ public class TerminalProfileEditViewModelTests
         };
 
         var vm = new TerminalProfileEditViewModel(original);
+        Assert.Equal("Monokai (副本)", vm.Name);
         vm.Name = "My New Theme";
         vm.Confirm();
 

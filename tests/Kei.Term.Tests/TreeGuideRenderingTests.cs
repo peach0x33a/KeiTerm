@@ -20,6 +20,7 @@ using Kei.Term.Core.Models.Profiles.BuiltIns;
 namespace Kei.Term.Tests;
 
 // 从真实模板的箭头和行位置取参照，再检查 Skia 像素；不能只验证模板里声明的偏移值。
+[Collection(GuiResourceCollection.Name)]
 public class TreeGuideRenderingTests
 {
     [Theory]

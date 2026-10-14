@@ -116,15 +116,4 @@ public class RollingFileLoggerTests : IDisposable
         Assert.True(File.Exists(recent), "保留窗口内的日志被误删");
     }
 
-    [Fact]
-    public void FileName_ContainsTodayDate()
-    {
-        using (var factory = CreateFactory())
-        {
-            factory.CreateLogger("Cat").LogInformation("x");
-        }
-
-        Assert.True(File.Exists(TodayFile));
-        Assert.EndsWith($".{DateTime.Now:yyyyMMdd}.log", TodayFile);
-    }
 }

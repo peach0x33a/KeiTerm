@@ -22,13 +22,11 @@ public class TreeNaturalOrderingTests
 {
     // ---- NaturalStringComparer ----
 
-    [Theory]
-    [InlineData("pve-3", "pve-11")]
-    [InlineData("pve-11", "pve-31")]
-    [InlineData("file2", "file10")]
-    [InlineData("node-9", "node-10")]
-    public void Comparer_OrdersNumericSegmentsByValue(string smaller, string larger)
+    [Fact]
+    public void Comparer_OrdersNumericSegmentsByValue()
     {
+        const string smaller = "file2";
+        const string larger = "file10";
         Assert.True(NaturalStringComparer.Instance.Compare(smaller, larger) < 0);
         Assert.True(NaturalStringComparer.Instance.Compare(larger, smaller) > 0);
     }

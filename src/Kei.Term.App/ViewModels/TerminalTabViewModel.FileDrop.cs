@@ -29,13 +29,6 @@ public partial class TerminalTabViewModel
     private Task? _terminalDropTask;
     private string? _terminalWorkingDirectory;
 
-    private void OnTerminalShellIntegrationEvent(object? sender, TerminalShellIntegrationEventArgs args)
-    {
-        // 库已经解析 OSC 7；只采用绝对目录，避免把控制序列或命令文本当路径。
-        string? directory = args.Value.WorkingDirectory;
-        if (directory?.StartsWith('/') == true && !directory.Any(char.IsControl)) _terminalWorkingDirectory = directory;
-    }
-
     [ObservableProperty]
     private bool _isHandlingTerminalDrop;
 

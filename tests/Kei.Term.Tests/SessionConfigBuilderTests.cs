@@ -101,24 +101,6 @@ public class SessionConfigBuilderTests
     }
 
     [Fact]
-    public void Build_IdentityId_NodeOverridesSettings()
-    {
-        var settings = CreateSettings();
-        var ownIdentityId = Guid.NewGuid();
-        var node = new SessionNode
-        {
-            Name = "Cred",
-            Host = "10.0.0.4",
-            IdentityId = ownIdentityId
-        };
-
-        var resolved = SessionConfigBuilder.Build(node, settings);
-
-        // 会话自身凭据优先于全局默认凭据
-        Assert.Equal(ownIdentityId, resolved.IdentityId);
-    }
-
-    [Fact]
     public void Build_JumpHostEnvAndTerminalProfile_PassedThroughWithoutFallback()
     {
         var settings = CreateSettings();

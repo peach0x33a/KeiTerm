@@ -8,6 +8,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless;
 using Avalonia.Input;
+using Avalonia.Media;
 using Avalonia.VisualTree;
 using Kei.Term.App.Services;
 using Kei.Term.App.Services.Connection;
@@ -79,8 +80,20 @@ public class SessionManagerSidebarTests
             Assert.Equal(340, sidebar.Bounds.Width, 2);
             Button toggle = window.FindControl<Button>("SessionManagerToggleButton")!;
             Button outside = window.FindControl<Button>("FileManagerToggleButton")!;
+            Assert.Equal(Assert.IsAssignableFrom<ISolidColorBrush>(window.FindResource("Kei.Bg.Pressed")).Color,
+                Assert.IsAssignableFrom<ISolidColorBrush>(toggle.Background).Color);
+            Assert.Equal(Assert.IsAssignableFrom<ISolidColorBrush>(window.FindResource("Kei.Text.Muted")).Color,
+                Assert.IsAssignableFrom<ISolidColorBrush>(toggle.BorderBrush).Color);
+            Assert.Equal(new Thickness(1), toggle.BorderThickness);
+            Avalonia.Controls.Shapes.Path toggleIcon = toggle.GetVisualDescendants().OfType<Avalonia.Controls.Shapes.Path>().Single();
+            Assert.Equal(Assert.IsAssignableFrom<ISolidColorBrush>(window.FindResource("Kei.Text.Primary")).Color,
+                Assert.IsAssignableFrom<ISolidColorBrush>(toggleIcon.Stroke).Color);
             Click(window, toggle);
             Assert.False(model.IsSessionManagerPinned);
+            Assert.Equal(Brushes.Transparent, toggle.Background);
+            Assert.Equal(new Thickness(0), toggle.BorderThickness);
+            Assert.Equal(Assert.IsAssignableFrom<ISolidColorBrush>(window.FindResource("Kei.Text.Primary")).Color,
+                Assert.IsAssignableFrom<ISolidColorBrush>(toggleIcon.Stroke).Color);
             Assert.True(sidebar.IsVisible);
             Assert.Equal(split.Bounds.Width, content.Bounds.Width, 2);
             Move(window, outside);

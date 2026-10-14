@@ -142,6 +142,9 @@ public class TreeNodeClonerTests
         Assert.Equal(deep.Username, cloneDeep.Username);
         Assert.Equal(deep.TerminalType, cloneDeep.TerminalType);
         Assert.Equal(deep.StartupScript, cloneDeep.StartupScript);
+        Assert.Equal(deep.IdentityId, cloneDeep.IdentityId);
+        Assert.Equal(deep.JumpHostSessionId, cloneDeep.JumpHostSessionId);
+        Assert.Equal(deep.Protocol, cloneDeep.Protocol);
 
         // IsExpanded 重置为 false
         Assert.False(clone.IsExpanded);
@@ -149,21 +152,6 @@ public class TreeNodeClonerTests
         // 环境变量内容一致且为独立字典实例
         Assert.NotSame(deep.EnvironmentVariables, cloneDeep.EnvironmentVariables);
         Assert.Equal(deep.EnvironmentVariables, cloneDeep.EnvironmentVariables);
-    }
-
-    [Fact]
-    public void DeepClone_PreservesCrossReferences()
-    {
-        var (folder, sub, deep, direct) = BuildTree();
-
-        var clone = Assert.IsType<FolderNode>(TreeNodeCloner.DeepClone(folder));
-        var cloneSub = Assert.IsType<FolderNode>(clone.Children.Single(c => c.Name == "Sub"));
-        var cloneDeep = Assert.IsType<SessionNode>(cloneSub.Children.Single());
-
-        // IdentityId / JumpHostSessionId / Protocol 为跨节点/会话属性，原样保留（禁止重新生成）
-        Assert.Equal(deep.IdentityId, cloneDeep.IdentityId);
-        Assert.Equal(deep.JumpHostSessionId, cloneDeep.JumpHostSessionId);
-        Assert.Equal(deep.Protocol, cloneDeep.Protocol);
     }
 
     [Fact]

@@ -29,31 +29,6 @@ public class SqliteProfilePersistenceTests : IDisposable
     }
 
     [Fact]
-    public async Task SaveNodeAsync_WithTerminalProfileId_PersistsAndReadsBack()
-    {
-        var repo = new SqliteTreeRepository(_connectionString);
-        await repo.InitializeAsync();
-
-        var profileId = "builtin-term-monokai";
-        var session = new SessionNode
-        {
-            Id = Guid.NewGuid(),
-            Name = "Server with Custom Profile",
-            Host = "192.168.1.100",
-            Port = 22,
-            Username = "root",
-            TerminalProfileId = profileId
-        };
-
-        await repo.SaveNodeAsync(session);
-
-        var loaded = await repo.GetNodeByIdAsync(session.Id) as SessionNode;
-        Assert.NotNull(loaded);
-        Assert.Equal(session.Name, loaded.Name);
-        Assert.Equal(profileId, loaded.TerminalProfileId);
-    }
-
-    [Fact]
     public async Task SaveNodeAsync_WithNullTerminalProfileId_PersistsAsNull()
     {
         var repo = new SqliteTreeRepository(_connectionString);
@@ -95,6 +70,7 @@ public class SqliteProfilePersistenceTests : IDisposable
 
         var loaded1 = await repo.GetNodeByIdAsync(session.Id) as SessionNode;
         Assert.NotNull(loaded1);
+        Assert.Equal(session.Name, loaded1.Name);
         Assert.Equal("builtin-term-dracula", loaded1.TerminalProfileId);
 
         // 更新为另一个 profile id

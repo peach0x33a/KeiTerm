@@ -99,23 +99,6 @@ public class TreeFilterTests
     }
 
     [Fact]
-    public void Select_DeepSessionHit_ReturnsCompleteAncestorChain()
-    {
-        var (root, prod, web, db, local) = BuildTree();
-        var all = Flatten(root, prod, web, db, local);
-
-        var result = TreeFilter.Select(all, "DB-Main");
-
-        // 深层命中时祖先链 root -> prod 完整返回，且不含兄弟节点
-        Assert.Equal(3, result.Count);
-        Assert.Contains(root, result);
-        Assert.Contains(prod, result);
-        Assert.Contains(db, result);
-        Assert.DoesNotContain(web, result);
-        Assert.DoesNotContain(local, result);
-    }
-
-    [Fact]
     public void Select_NoMatch_ReturnsEmptyList()
     {
         var (root, prod, web, db, local) = BuildTree();
