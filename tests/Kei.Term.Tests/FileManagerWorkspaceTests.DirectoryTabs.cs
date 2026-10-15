@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.VisualTree;
 using Dock.Avalonia.Controls;
 using Kei.Term.App.Helpers;
@@ -129,17 +130,15 @@ public partial class FileManagerWorkspaceTests
         ContextMenu menu = list.ContextMenu!;
         try
         {
-            menu.Open(list);
-            HeadlessAvalonia.Pump();
             if (nativeInvocation)
             {
-                ContextMenuSnapshot snapshot = ContextMenuSnapshot.Create(menu)!;
-                NativeContextMenuEntry entry = snapshot.Entries.Single(entry => entry.Label == Strings.Get("FileManager.OpenInTab"));
-                menu.Close();
-                snapshot.Invoke(entry.Id);
+                using SystemContextMenuController controller = new(TopLevel.GetTopLevel(view)!, () => true, new DirectoryTabMenuPresenter());
+                list.RaiseEvent(new ContextRequestedEventArgs());
             }
             else
             {
+                menu.Open(list);
+                HeadlessAvalonia.Pump();
                 MenuItem entry = menu.Items.OfType<MenuItem>().Single(item => Equals(item.Header, Strings.Get("FileManager.OpenInTab")));
                 Assert.True(entry.IsVisible);
                 Assert.True(entry.Command!.CanExecute(entry.CommandParameter));
@@ -148,6 +147,17 @@ public partial class FileManagerWorkspaceTests
         }
         finally { menu.Close(); }
         HeadlessAvalonia.Pump();
+    }
+
+    private sealed class DirectoryTabMenuPresenter : ISystemContextMenuPresenter
+    {
+        public bool IsSupported(TopLevel topLevel) => true;
+
+        public bool TryShow(Control owner, Point position, ContextMenuSnapshot snapshot, out int selectedId)
+        {
+            selectedId = snapshot.Entries.Single(entry => entry.Label == Strings.Get("FileManager.OpenInTab")).Id;
+            return true;
+        }
     }
 
     private static void AssertFileHeadersAreVisible(Host host)
@@ -162,6 +172,13 @@ public partial class FileManagerWorkspaceTests
             Point origin = header.TranslatePoint(default, host.Window)!.Value;
             Assert.True(origin.X >= previousRight && origin.X + header.Bounds.Width <= host.Window.Bounds.Width,
                 $"标签在屏幕外或重叠: {origin}, {header.Bounds}; 前一标签右边缘={previousRight}");
+            // 标签自身有尺寸仍可能落在旧的 ScrollViewer 裁剪区域外。
+            foreach (Control ancestor in header.GetVisualAncestors().OfType<Control>().Where(control => control.ClipToBounds))
+            {
+                Point relative = header.TranslatePoint(default, ancestor)!.Value;
+                Assert.True(relative.X >= 0 && relative.X + header.Bounds.Width <= ancestor.Bounds.Width,
+                    $"标签被 {ancestor.GetType().Name} 裁剪: {relative}, {header.Bounds}; 视口={ancestor.Bounds}");
+            }
             previousRight = origin.X + header.Bounds.Width;
         }
     }
