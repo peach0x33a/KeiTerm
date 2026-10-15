@@ -121,5 +121,6 @@ public record ResolvedSessionConfig(
     Guid? ProxyProfileId = null,
     // 保留继承语义，已经打开的连接也会采用当前全局上传设置。
     TerminalUploadProtocol? TerminalUploadProtocolOverride = null,
-    TerminalMultiplexerMode MultiplexerMode = TerminalMultiplexerMode.Auto
+    TerminalMultiplexerMode MultiplexerMode = TerminalMultiplexerMode.Auto,
+    string TabTitleTemplate = ""
 );

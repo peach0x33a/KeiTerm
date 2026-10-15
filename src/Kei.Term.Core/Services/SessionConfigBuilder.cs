@@ -51,7 +51,8 @@ public static class SessionConfigBuilder
             ConnectTimeoutSeconds: node.Overrides.ConnectTimeoutSeconds ?? settings.ConnectTimeoutSeconds,
             ProxyProfileId: node.ProxyProfileId,
             TerminalUploadProtocolOverride: node.Overrides.TerminalUploadProtocol,
-            MultiplexerMode: node.Overrides.MultiplexerMode ?? settings.TerminalMultiplexerMode
+            MultiplexerMode: node.Overrides.MultiplexerMode ?? settings.TerminalMultiplexerMode,
+            TabTitleTemplate: settings.TabTitleTemplate
         );
     }
 }
